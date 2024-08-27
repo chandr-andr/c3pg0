@@ -12,13 +12,20 @@ app = typer.Typer()
 
 
 @app.command()
+def init() -> None:
+    """Initialize the migration tool.
+    
+    It must be done once at the start.
+    """
+
+
+@app.command()
 def apply(
     version: Annotated[
         str,
         typer.Option(help="New version for the migration."),
     ],
 ) -> None:
-    print(ApplicationConfig.construct())
     """Apply new migration."""
 
 

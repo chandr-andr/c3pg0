@@ -11,6 +11,9 @@ class ApplicationConfig:
     # Folder for migrations
     migration_path: str | None = "./migrations"
 
+    # Supported driver
+    driver: str | None = None
+
     # PostgreSQL URL
     postgres_url: str | None = "postgres://postgres:postgres@localhost:5432/postgres"
     postgres_url_env: str | None = "C3PG0_PSQL_URL"
@@ -45,3 +48,6 @@ class ApplicationConfig:
         c3pg0_config = pyconfig["tool"].get("c3pg0")
 
         return ApplicationConfig(**c3pg0_config if c3pg0_config else {})
+
+
+application_config = ApplicationConfig.construct()

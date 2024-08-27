@@ -1,0 +1,69 @@
+{
+    "[python]": {
+        "editor.formatOnType": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "python.formatting.provider": "none",
+    },
+    "tabnine.experimentalAutoImports": true,
+    "settings.cycle": [
+        {
+            "id": "rust-toggle-inlay-hints",
+            "overrideWorkspaceSettings": true,
+            "values": [ // Note: use the same settings in each values object
+                {
+                    "rust-analyzer.inlayHints.typeHints.enable": false,
+                    "rust-analyzer.inlayHints.chainingHints.enable": false,
+                    "rust-analyzer.inlayHints.parameterHints.enable": false,
+                    //   "rust-analyzer.displayInlayHints": false // sets the inlay hints off?
+                },
+                {
+                    "rust-analyzer.inlayHints.typeHints.enable": true,
+                    "rust-analyzer.inlayHints.chainingHints.enable": true,
+                    "rust-analyzer.inlayHints.parameterHints.enable": true,
+                    //   "rust-analyzer.displayInlayHints": true // sets the inlay hints on
+                }
+            ]
+        }
+    ],
+    "rust-analyzer.inlayHints.typeHints.enable": false,
+    "rust-analyzer.inlayHints.chainingHints.enable": false,
+    "rust-analyzer.inlayHints.parameterHints.enable": false,
+    // "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "workbench.colorTheme": "GitHub Dark",
+    "python.formatting.blackArgs": [
+        "--line-length=79"
+    ],
+    "flake8.logLevel": "info",
+    "files.autoSave": "onWindowChange",
+    "mypy.dmypyExecutable": "/Users/aleksandrkiselev/Library/Caches/pypoetry/virtualenvs/c3pg0-lUAJQFTE-py3.12/bin/dmypy",
+    "rust-analyzer.diagnostics.disabled": [
+        "unresolved-proc-macro"
+    ],
+    "cSpell.userWords": [
+        "conninfo",
+        "FULLOUTERJOIN",
+        "INNERJOIN",
+        "jetstream",
+        "keepalives",
+        "LEFTJOIN",
+        "nanosec",
+        "NATS",
+        "PSQL",
+        "psqlpy",
+        "psycopg",
+        "pyfunction",
+        "qaspen",
+        "querystring",
+        "RIGHTJOIN",
+        "taskiq",
+        "taskiqpsqlpy",
+        "TIMESTAMPTZ",
+        "traefik"
+    ],
+    "window.zoomLevel": 1,
+    "cSpell.words": [
+        "pyconfig"
+    ],
+}

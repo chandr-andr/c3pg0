@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "c3pg0"
+version = "0.1.0"
+description = ""
+authors = ["chandr-andr (Kiselev Aleksandr) <chandr@chandr.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+typer = "^0.12.5"
+pyyaml = "^6.0.2"
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.6.2"
+black = "^24.8.0"
+isort = "^5.13.2"
+
+
+[tool.poetry.group.type.dependencies]
+mypy = "^1.11.2"
+
+[tool.c3pg0]
+migration_path = "./migrations"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

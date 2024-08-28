@@ -15,24 +15,8 @@ class ApplicationConfig:
     driver: str | None = None
 
     # PostgreSQL URL
-    postgres_url: str | None = "postgres://postgres:postgres@localhost:5432/postgres"
+    postgres_url: str | None = None
     postgres_url_env: str | None = "C3PG0_PSQL_URL"
-
-    # PostgresSQL URL separate envs
-    postgres_user: str | None = "postgres"
-    postgres_user_env: str | None = "C3PG0_PSQL_USER"
-
-    postgres_password: str | None = "postgres"
-    postgres_password_env: str | None = "C3PG0_PSQL_PASSWORD"
-    
-    postgres_host: str | None = "localhost"
-    postgres_host_env: str | None = "C3PG0_PSQL_HOST"
-    
-    postgres_port: int | None = 5432
-    postgres_port_env: str | None = "C3PG0_PSQL_PORT"
-
-    postgres_database_name: str | None = "postgres"
-    postgres_database_name_env: str | None = "C3PG0_PSQL_DB_NAME"
 
     @classmethod
     def construct(cls: type["ApplicationConfig"]) -> "ApplicationConfig":

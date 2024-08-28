@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.12"
 typer = "^0.12.5"
 pyyaml = "^6.0.2"
+psqlpy = "^0.7.7"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "^0.6.2"
@@ -21,6 +22,8 @@ mypy = "^1.11.2"
 
 [tool.c3pg0]
 migration_path = "./migrations"
+postgres_url = "postgres://postgres:postgres@localhost:5432/c3pg0"
+driver = "c3pg0.test_driver:build_driver"
 
 
 [build-system]

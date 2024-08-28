@@ -1,4 +1,5 @@
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
+import asyncio
 from dataclasses import dataclass
 from typing import Optional, Sequence, Type, Union
 from typing_extensions import Annotated
@@ -6,6 +7,7 @@ from typing_extensions import Annotated
 import typer
 
 from c3pg0.app_config import ApplicationConfig
+from c3pg0.utils import retrieve_driver
 
 
 app = typer.Typer()
@@ -17,6 +19,7 @@ def init() -> None:
     
     It must be done once at the start.
     """
+    retrieve_driver()
 
 
 @app.command()

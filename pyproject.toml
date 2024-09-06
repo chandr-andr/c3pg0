@@ -10,6 +10,7 @@ python = "^3.12"
 typer = "^0.12.5"
 pyyaml = "^6.0.2"
 psqlpy = "^0.7.7"
+colorama = "^0.4.6"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "^0.6.2"
@@ -20,8 +21,12 @@ isort = "^5.13.2"
 [tool.poetry.group.type.dependencies]
 mypy = "^1.11.2"
 
+
+[tool.poetry.group.dev.dependencies]
+types-colorama = "^0.4.15.20240311"
+
 [tool.c3pg0]
-migration_path = "./migrations"
+migration_path = "./c3pg0/migrations"
 postgres_url = "postgres://postgres:postgres@localhost:5432/c3pg0"
 driver = "c3pg0.test_driver:build_driver"
 

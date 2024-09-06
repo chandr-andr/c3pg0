@@ -2,6 +2,7 @@ import os
 from dataclasses import dataclass
 
 import tomllib
+from typing import Self
 
 
 @dataclass
@@ -9,7 +10,7 @@ class ApplicationConfig:
     """Main config for the C3PG0 application."""
 
     # Folder for migrations
-    migration_path: str | None = "./migrations"
+    migration_path: str = "./migrations"
 
     # Supported driver
     driver: str | None = None
@@ -21,7 +22,7 @@ class ApplicationConfig:
     @classmethod
     def construct(cls: type["ApplicationConfig"]) -> "ApplicationConfig":
         """Create new ApplicationConfig from pyproject.toml configuration.
-        
+
         ### Returns:
         New `ApplicationConfig`.
         """

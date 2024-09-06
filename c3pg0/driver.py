@@ -1,5 +1,5 @@
 import os
-from typing import Protocol, Self, runtime_checkable
+from typing import Any, Protocol, Self, runtime_checkable
 
 from psqlpy import ConnectionPool
 
@@ -9,8 +9,29 @@ from c3pg0.app_config import application_config
 @runtime_checkable
 class C3PG0Driver(Protocol):
     
-    async def is_version_exists(self: Self, version: str) -> bool:
+    async def exists(
+        self: Self,
+        querystring: str,
+        parameters: list[Any] | None = None,
+    ) -> bool:
         """Check is version exists or not."""
+    
+    async def fetch(
+        self: Self,
+        querystring: str,
+        parameters: list[Any] | None = None,
+    ) -> list[dict[str, Any]] | None:
+        """Execute query and fetch data from response."""
+    
+    async def execute(
+        self: Self,
+        querystring: str,
+        parameters: list[Any] | None = None,
+    ) -> None:
+        """Execute query.
+        
+        Don't return anything, just run the query.
+        """
 
 
 class PSQLPyC3PG0Driver:
@@ -37,12 +58,41 @@ class PSQLPyC3PG0Driver:
             "Please provide minimal necessary configuration.",
         )
 
-
-
-    async def is_version_exists(self: Self, version: str) -> bool:
+    async def exists(self: Self, querystring: str, parameters: list[Any] | None = None) -> bool:
         """Check is version exists or not."""
         async with self.conn_pool.acquire() as conn:
             return await conn.fetch_val(
-                querystring="SELECT EXISTS (SELECT 1 FROM c3pg0 WHERE version = $1)",
-                parameters=[version],
+                querystring=querystring,
+                parameters=parameters,
             )
+
+    async def fetch(
+        self: Self,
+        querystring: str,
+        parameters: list[Any] | None = None,
+    ) -> list[dict[str, Any]] | None:
+        """Execute query and fetch data from response."""
+        async with self.conn_pool.acquire() as conn:
+            response = await conn.fetch(
+                querystring=querystring,
+                parameters=parameters,
+            )
+        
+        result = response.result()
+        return result if result else None
+
+    async def execute(
+        self: Self,
+        querystring: str,
+        parameters: list[Any] | None = None,
+    ) -> None:
+        """Execute query.
+        
+        Don't return anything, just run the query.
+        """
+        async with self.conn_pool.acquire() as conn:
+            await conn.execute(
+                querystring=querystring,
+                parameters=parameters,
+            )
+

@@ -3,6 +3,8 @@ import enum
 from typing import Self
 from colorama import Fore
 
+from c3pg0.utils import retrieve_driver
+
 
 class BaseCommandResult(abc.ABC):
     """Base command result class."""
@@ -33,6 +35,8 @@ class FailCommandResult(BaseCommandResult):
 
 class Command(abc.ABC):
     """Protocol for every command available."""
+
+    driver = retrieve_driver()
 
     @abc.abstractmethod
     async def execute_cmd(self) -> BaseCommandResult:

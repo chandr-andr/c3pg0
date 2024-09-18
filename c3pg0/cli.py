@@ -1,7 +1,5 @@
-from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 import asyncio
-from dataclasses import dataclass
-from typing import Optional, Sequence, Type, Union
+from typing import Optional
 from typing_extensions import Annotated
 
 import typer
@@ -27,11 +25,27 @@ def init() -> None:
 @app.command()
 def apply(
     version: Annotated[
-        str,
+        Optional[str],
         typer.Option(help="New version for the migration."),
-    ],
+    ] = None,
+    force_no_version: Annotated[
+        bool,
+        typer.Option(
+            help=(
+                "Force apply migrations without setting version. "
+                "Without this parameter rolling back "
+                "to this version is impossible! "
+                "In most cases, it must be used only for local development."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Apply new migration."""
+    if not version and not force_no_version:
+        print(
+            "version parameter must be specified, "
+            "or set force_no_version",
+        )
 
 
 @app.command()
@@ -51,24 +65,24 @@ def create(
         typer.Argument(help="Name for the revision."),
     ],
     apply_in_transaction: Annotated[
-        Optional[bool],
-        typer.Option(help="Execute in transaction or not."),
+        bool,
+        typer.Option(
+            help="Execute apply migration in a transaction or not.",
+        ),
     ] = True,
     rollback_in_transaction: Annotated[
-        Optional[bool],
-        typer.Option(help="Execute in transaction or not."),
+        bool,
+        typer.Option(
+            help="Execute rollback migration in a transaction or not.",
+        ),
     ] = True,
-    # is_python: Annotated[
-    #     Optional[bool],
-    #     typer.Option(help="Is it .py file of not?"),
-    # ] = False,
 ) -> None:
     """Create new migration."""
     result = asyncio.run(
         CreateCommand(
             migration_name=name,
-            apply_in_transaction=apply_in_transaction or True,
-            rollback_in_transaction=rollback_in_transaction or True,
+            apply_in_transaction=apply_in_transaction,
+            rollback_in_transaction=rollback_in_transaction,
         ).execute_cmd()
     )
         

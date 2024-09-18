@@ -7,7 +7,7 @@ SELECT EXISTS (
 """
 
 CREATE_TABLE_QUERY = """
-CREATE TABLE c3pg0 (
+CREATE TABLE c3pg0_migrations (
     id SERIAL,
     version VARCHAR,
     revision UUID

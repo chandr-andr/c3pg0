@@ -17,7 +17,7 @@ class InitCommand(Command):
             return SuccessCommandResult(
                 message="c3pg0 is already initialized",
             )
-        
+
         return await self.create_table()
     
     async def is_already_init(self: Self) -> bool:

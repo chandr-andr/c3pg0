@@ -23,6 +23,18 @@ class C3PG0Driver(Protocol):
     ) -> list[dict[str, Any]] | None:
         """Execute query and fetch data from response."""
     
+    async def fetch_val(
+        self: Self,
+        querystring: str,
+        parameters: list[Any] | None = None,
+    ) -> Any:
+        """
+        Execute a query and return one value.
+
+        Querystring must return exactly one value,
+        otherwise exception will be raised.
+        """
+    
     async def execute(
         self: Self,
         querystring: str,
@@ -31,6 +43,21 @@ class C3PG0Driver(Protocol):
         """Execute query.
         
         Don't return anything, just run the query.
+        """
+    
+    async def execute_migration(
+        self,
+        querystring: str,
+        in_transaction: bool = True,
+    ) -> None:
+        """Execute query from migration file.
+
+        This method must be able to execute many queries in one string:
+        `SELECT 1; SELECT 2; SELECT 3; ...`.
+
+        ### Parameters:
+        - `querystring`: migration query to execute.
+        - `in_transaction`: flag execute migration in transaction or not.
         """
 
 
@@ -64,6 +91,7 @@ class PSQLPyC3PG0Driver:
             return await conn.fetch_val(
                 querystring=querystring,
                 parameters=parameters,
+                prepared=False,
             )
 
     async def fetch(
@@ -76,10 +104,29 @@ class PSQLPyC3PG0Driver:
             response = await conn.fetch(
                 querystring=querystring,
                 parameters=parameters,
+                prepared=False,
             )
         
         result = response.result()
         return result if result else None
+    
+    async def fetch_val(
+        self: Self,
+        querystring: str,
+        parameters: list[Any] | None = None,
+    ) -> Any:
+        """
+        Execute a query and return one value.
+
+        Querystring must return exactly one value,
+        otherwise exception will be raised.
+        """
+        async with self.conn_pool.acquire() as conn:
+            return await conn.fetch_val(
+                querystring=querystring,
+                parameters=parameters,
+                prepared=False,
+            )
 
     async def execute(
         self: Self,
@@ -94,5 +141,25 @@ class PSQLPyC3PG0Driver:
             await conn.execute(
                 querystring=querystring,
                 parameters=parameters,
+                prepared=False,
             )
 
+    async def execute_migration(
+        self,
+        querystring: str,
+        in_transaction: bool = True,
+    ) -> None:
+        """Execute query from migration file.
+
+        ### Parameters:
+        - `querystring`: migration query to execute.
+        - `in_transaction`: flag execute migration in transaction or not.
+        """
+        async with self.conn_pool.acquire() as conn:
+            if in_transaction:
+                async with conn.transaction() as transaction:
+                    await transaction.execute_batch(
+                        querystring=querystring,
+                    )
+            else:
+                await conn.execute_many(querystring=querystring)

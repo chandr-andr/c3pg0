@@ -8,8 +8,8 @@ import uuid
 from c3pg0.commands.base import BaseCommandResult, Command, SuccessCommandResult
 from c3pg0.consts import MAX_MIGRATION_NAME_LENGTH
 from c3pg0.exceptions import CommandError
-from c3pg0.utils import retrieve_driver
 from c3pg0.app_config import application_config
+from c3pg0.queries import RETRIEVE_LAST_REVISION
 
 
 class CreateCommand(Command):
@@ -33,6 +33,18 @@ class CreateCommand(Command):
         return SuccessCommandResult(
             "New migration successfully created",
         )
+
+    async def retrieve_last_revision(self) -> str | None:
+        """
+        Retrieve the last applied revision.
+
+        ### Returns:
+        last revision as a string or None.
+        """
+        last_revision: str | None = await self.driver.fetch_val(
+            querystring=RETRIEVE_LAST_REVISION,
+        )
+        return last_revision
     
     def build_new_migration(self: Self) -> None:
         migration_path = self.create_new_migration_folder()

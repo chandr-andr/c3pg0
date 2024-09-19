@@ -21,3 +21,10 @@ SELECT EXISTS (
     WHERE version = $1
 )
 """
+
+RETRIEVE_LAST_REVISION = """
+SELECT revision
+FROM c3pg0_migrations
+ORDER BY id DESC
+LIMIT 1
+"""

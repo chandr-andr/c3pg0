@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 import datetime
 import json
 from os import mkdir
+import os
 from pathlib import Path
-from typing import Self
+from typing import Any, Self
 import uuid
 
 from c3pg0.commands.base import BaseCommandResult, Command, SuccessCommandResult
@@ -10,6 +12,42 @@ from c3pg0.consts import MAX_MIGRATION_NAME_LENGTH
 from c3pg0.exceptions import CommandError
 from c3pg0.app_config import application_config
 from c3pg0.queries import RETRIEVE_LAST_REVISION
+
+
+@dataclass
+class MigrationSpec:
+    revision: str
+    back_revision: str | None
+    apply_in_transaction: bool
+    rollback_in_transaction: bool
+
+
+def migrations_revision_history() -> list[str]:
+    migrations_data: dict[str | None, MigrationSpec] = {}
+
+    all_migrations = [
+        migration[0] for migration 
+        in os.walk(application_config.migration_path)
+    ][1:]
+    
+    while all_migrations:
+        migration = all_migrations.pop()
+        with open(f"{migration}/specification.json") as migration_spec_json:
+            migration_spec = MigrationSpec(**json.load(migration_spec_json))
+
+            migrations_data[migration_spec.back_revision] = migration_spec
+
+    # sort
+    sorted_migrations_revisions: list[str] = []
+
+    revision_back_revision = None
+    while len(sorted_migrations_revisions) != len(migrations_data):
+        migration_spec = migrations_data[revision_back_revision]
+        sorted_migrations_revisions.append(migration_spec.revision)
+
+        revision_back_revision = migration_spec.revision
+
+    return sorted_migrations_revisions
 
 
 class CreateCommand(Command):
@@ -26,9 +64,10 @@ class CreateCommand(Command):
         self.apply_in_transaction = apply_in_transaction
         self.rollback_in_transaction = rollback_in_transaction
         self.revision = uuid.uuid4().hex
+        self.migrations_revision_history = migrations_revision_history()
 
     async def execute_cmd(self: Self) -> BaseCommandResult:
-        self.build_new_migration()
+        await self.build_new_migration()
 
         return SuccessCommandResult(
             "New migration successfully created",
@@ -41,22 +80,26 @@ class CreateCommand(Command):
         ### Returns:
         last revision as a string or None.
         """
-        last_revision: str | None = await self.driver.fetch_val(
+        last_revision = await self.driver.fetch(
             querystring=RETRIEVE_LAST_REVISION,
         )
-        return last_revision
+
+        return last_revision[0]["revision"] if last_revision else None
     
-    def build_new_migration(self: Self) -> None:
+    async def build_new_migration(self: Self) -> None:
         migration_path = self.create_new_migration_folder()
+
         self.create_migration_file(
             migration_path=migration_path,
             file_name="apply.sql",
         )
+
         self.create_migration_file(
             migration_path=migration_path,
             file_name="rollback.sql",
         )
-        self.create_specification_file(
+
+        await self.create_specification_file(
             specification_path=migration_path,
         )
 
@@ -99,12 +142,17 @@ class CreateCommand(Command):
                 "Cannot create new migration file",
             ) from exc
 
-    def create_specification_file(
+    async def create_specification_file(
         self,
         specification_path: str,
     ) -> None:
         specification_data = {
             "revision": self.revision,
+            "back_revision": (
+                self.migrations_revision_history[-1]
+                if self.migrations_revision_history
+                else None
+            ),
             "apply_in_transaction": self.apply_in_transaction,
             "rollback_in_transaction": self.rollback_in_transaction,
         }

@@ -20,7 +20,7 @@ class ApplicationConfig:
     postgres_url_env: str | None = "C3PG0_PSQL_URL"
 
     # Other custom settings
-    datetime_format: str = "%d-%m-%Y|%H:%M:%S"
+    datetime_format: str = "%d-%m-%Y_%H:%M:%S"
 
     @classmethod
     def construct(cls: type["ApplicationConfig"]) -> "ApplicationConfig":

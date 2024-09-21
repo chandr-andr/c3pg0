@@ -5,6 +5,7 @@ from typing_extensions import Annotated
 import typer
 
 from c3pg0.app_config import ApplicationConfig
+from c3pg0.commands.check_cmd import CheckCommand
 from c3pg0.commands.create_cmd import CreateCommand
 from c3pg0.commands.init_cmd import InitCommand
 
@@ -19,6 +20,17 @@ def init() -> None:
     It must be done once at the start.
     """
     result = asyncio.run(InitCommand().execute_cmd())
+    result.print_info()
+
+
+@app.command()
+def check_history() -> None:
+    """
+    Check history of the migrations.
+
+    Local history and database history must be the same.
+    """
+    result = asyncio.run(CheckCommand().execute_cmd())
     result.print_info()
 
 

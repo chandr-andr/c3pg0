@@ -28,3 +28,9 @@ FROM c3pg0_migrations
 ORDER BY id DESC
 LIMIT 1
 """
+
+RETRIEVE_SORTED_REVISIONS = """
+SELECT revision
+FROM c3pg0_migrations
+ORDER BY id DESC
+"""

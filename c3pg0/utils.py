@@ -12,6 +12,7 @@ from typing import Any, Generator
 
 from c3pg0.driver import C3PG0Driver, PSQLPyC3PG0Driver
 from c3pg0.app_config import application_config
+from c3pg0.queries import RETRIEVE_SORTED_REVISIONS
 
 
 @dataclass
@@ -99,6 +100,11 @@ def _retrieve_driver(possible_driver: Any) -> C3PG0Driver:
 
 
 def migrations_revision_history() -> list[str]:
+    """Retrieve migration history by revisions locally.
+    
+    ### Returns:
+    list of sorted revisions.
+    """
     migrations_data: dict[str | None, MigrationSpec] = {}
 
     all_migrations = [
@@ -124,3 +130,18 @@ def migrations_revision_history() -> list[str]:
         revision_back_revision = migration_spec.revision
 
     return sorted_migrations_revisions
+
+
+async def database_revision_history(
+    driver: C3PG0Driver,
+) -> list[str]:
+    """Retrieve migration history by revisions with database."""
+    result = await driver.fetch(
+        querystring=RETRIEVE_SORTED_REVISIONS,
+    )
+
+    return (
+        [db_record["revision"] for db_record in result]
+        if result
+        else []
+    )

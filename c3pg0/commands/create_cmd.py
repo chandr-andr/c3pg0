@@ -12,42 +12,7 @@ from c3pg0.consts import MAX_MIGRATION_NAME_LENGTH
 from c3pg0.exceptions import CommandError
 from c3pg0.app_config import application_config
 from c3pg0.queries import RETRIEVE_LAST_REVISION
-
-
-@dataclass
-class MigrationSpec:
-    revision: str
-    back_revision: str | None
-    apply_in_transaction: bool
-    rollback_in_transaction: bool
-
-
-def migrations_revision_history() -> list[str]:
-    migrations_data: dict[str | None, MigrationSpec] = {}
-
-    all_migrations = [
-        migration[0] for migration 
-        in os.walk(application_config.migration_path)
-    ][1:]
-    
-    while all_migrations:
-        migration = all_migrations.pop()
-        with open(f"{migration}/specification.json") as migration_spec_json:
-            migration_spec = MigrationSpec(**json.load(migration_spec_json))
-
-            migrations_data[migration_spec.back_revision] = migration_spec
-
-    # sort
-    sorted_migrations_revisions: list[str] = []
-
-    revision_back_revision = None
-    while len(sorted_migrations_revisions) != len(migrations_data):
-        migration_spec = migrations_data[revision_back_revision]
-        sorted_migrations_revisions.append(migration_spec.revision)
-
-        revision_back_revision = migration_spec.revision
-
-    return sorted_migrations_revisions
+from c3pg0.utils import migrations_revision_history
 
 
 class CreateCommand(Command):

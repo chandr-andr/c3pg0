@@ -1,7 +1,10 @@
 import asyncio
 from contextlib import contextmanager
+from dataclasses import dataclass
 from importlib import import_module
 import inspect
+import json
+import os
 from pathlib import Path
 import sys
 import types
@@ -9,6 +12,14 @@ from typing import Any, Generator
 
 from c3pg0.driver import C3PG0Driver, PSQLPyC3PG0Driver
 from c3pg0.app_config import application_config
+
+
+@dataclass
+class MigrationSpec:
+    revision: str
+    back_revision: str | None
+    apply_in_transaction: bool
+    rollback_in_transaction: bool
 
 
 @contextmanager
@@ -85,3 +96,31 @@ def _retrieve_driver(possible_driver: Any) -> C3PG0Driver:
         return possible_driver
     
     raise ValueError("NOT")
+
+
+def migrations_revision_history() -> list[str]:
+    migrations_data: dict[str | None, MigrationSpec] = {}
+
+    all_migrations = [
+        migration[0] for migration 
+        in os.walk(application_config.migration_path)
+    ][1:]
+    
+    while all_migrations:
+        migration = all_migrations.pop()
+        with open(f"{migration}/specification.json") as migration_spec_json:
+            migration_spec = MigrationSpec(**json.load(migration_spec_json))
+
+            migrations_data[migration_spec.back_revision] = migration_spec
+
+    # sort
+    sorted_migrations_revisions: list[str] = []
+
+    revision_back_revision = None
+    while len(sorted_migrations_revisions) != len(migrations_data):
+        migration_spec = migrations_data[revision_back_revision]
+        sorted_migrations_revisions.append(migration_spec.revision)
+
+        revision_back_revision = migration_spec.revision
+
+    return sorted_migrations_revisions

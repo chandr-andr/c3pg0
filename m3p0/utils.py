@@ -12,6 +12,7 @@ from typing import Any, Generator
 
 from m3p0.driver import M3P0Driver, PSQLPyM3P0Driver
 from m3p0.app_config import application_config
+from m3p0.models import MigrationModel
 from m3p0.queries import RETRIEVE_SORTED_REVISIONS
 
 
@@ -111,6 +112,9 @@ def migrations_revision_history() -> list[str]:
         migration[0] for migration 
         in os.walk(application_config.migration_path)
     ][1:]
+
+    # Need to store revision as a key and path as a path to the directory.
+    revision_to_path = {}
     
     while all_migrations:
         migration = all_migrations.pop()
@@ -132,16 +136,26 @@ def migrations_revision_history() -> list[str]:
     return sorted_migrations_revisions
 
 
-async def database_revision_history(
+async def database_migration_history(
     driver: M3P0Driver,
-) -> list[str]:
+) -> list[MigrationModel]:
     """Retrieve migration history by revisions with database."""
     result = await driver.fetch(
         querystring=RETRIEVE_SORTED_REVISIONS,
     )
 
-    return (
-        [db_record["revision"] for db_record in result]
-        if result
-        else []
-    )
+    return [
+        MigrationModel(**record) for record in result
+    ] if result else []
+
+
+async def database_revision_history(
+    driver: M3P0Driver,
+) -> list[str]:
+    """Retrieve migration history by revisions with database."""
+    migrations = await database_migration_history(driver=driver)
+
+    return [
+        migration.revision.hex for migration in migrations
+        if migration.is_applied is None or not migration.is_applied
+    ]

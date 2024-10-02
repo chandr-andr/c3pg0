@@ -5,6 +5,7 @@ from typing_extensions import Annotated
 import typer
 
 from m3p0.app_config import ApplicationConfig
+from m3p0.commands.apply_cmd import ApplyCommand
 from m3p0.commands.check_cmd import CheckCommand
 from m3p0.commands.create_cmd import CreateCommand
 from m3p0.commands.init_cmd import InitCommand
@@ -58,6 +59,13 @@ def apply(
             "version parameter must be specified, "
             "or set force_no_version",
         )
+    result = asyncio.run(
+        ApplyCommand(
+            version=version,
+            force_no_version=force_no_version,
+        ).execute_cmd()
+    )
+    result.print_info()
 
 
 @app.command()

@@ -20,6 +20,7 @@ isort = "^5.13.2"
 
 [tool.poetry.group.type.dependencies]
 mypy = "^1.11.2"
+types-colorama = "^0.4.15.20240311"
 
 
 [tool.poetry.group.dev.dependencies]

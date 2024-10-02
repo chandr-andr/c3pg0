@@ -10,7 +10,8 @@ CREATE_TABLE_QUERY = """
 CREATE TABLE M3P0_migrations (
     id SERIAL,
     version VARCHAR,
-    revision UUID
+    revision UUID,
+    is_applied BOOL
 )
 """
 

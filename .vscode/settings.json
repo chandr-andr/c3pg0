@@ -37,7 +37,7 @@
     ],
     "flake8.logLevel": "info",
     "files.autoSave": "onWindowChange",
-    "mypy.dmypyExecutable": "/Users/aleksandrkiselev/Library/Caches/pypoetry/virtualenvs/m3p0-lUAJQFTE-py3.12/bin/dmypy",
+    "mypy.dmypyExecutable": "/Users/aleksandrkiselev/Library/Caches/pypoetry/virtualenvs/c3pg0-lUAJQFTE-py3.12/bin/dmypy",
     "rust-analyzer.diagnostics.disabled": [
         "unresolved-proc-macro"
     ],

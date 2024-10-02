@@ -1,6 +1,7 @@
 
 from m3p0.commands.base import BaseCommandResult, Command, SuccessCommandResult
 from m3p0.queries import IS_VERSION_ALREADY_EXIST
+from m3p0.utils import database_revision_history, migrations_revision_history
 
 
 class ApplyCommand(Command):
@@ -20,6 +21,19 @@ class ApplyCommand(Command):
         self.force_no_version = force_no_version
 
     async def execute_cmd(self) -> BaseCommandResult:
+        to_run_migrations = [
+            migration for migration
+            in migrations_revision_history()
+            if migration not in await database_revision_history(self.driver)
+        ]
+
+        if not to_run_migrations:
+            return SuccessCommandResult(
+                "There is no migrations to apply! Have fun!",
+            )
+        
+        print(to_run_migrations)
+
         return SuccessCommandResult(
             "123",
         )

@@ -7,12 +7,12 @@ from pathlib import Path
 from typing import Any, Self
 import uuid
 
-from c3pg0.commands.base import BaseCommandResult, Command, SuccessCommandResult
-from c3pg0.consts import MAX_MIGRATION_NAME_LENGTH
-from c3pg0.exceptions import CommandError
-from c3pg0.app_config import application_config
-from c3pg0.queries import RETRIEVE_LAST_REVISION
-from c3pg0.utils import migrations_revision_history
+from m3p0.commands.base import BaseCommandResult, Command, SuccessCommandResult
+from m3p0.consts import MAX_MIGRATION_NAME_LENGTH
+from m3p0.exceptions import CommandError
+from m3p0.app_config import application_config
+from m3p0.queries import RETRIEVE_LAST_REVISION
+from m3p0.utils import migrations_revision_history
 
 
 class CreateCommand(Command):

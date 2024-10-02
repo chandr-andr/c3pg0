@@ -4,10 +4,10 @@ from typing_extensions import Annotated
 
 import typer
 
-from c3pg0.app_config import ApplicationConfig
-from c3pg0.commands.check_cmd import CheckCommand
-from c3pg0.commands.create_cmd import CreateCommand
-from c3pg0.commands.init_cmd import InitCommand
+from m3p0.app_config import ApplicationConfig
+from m3p0.commands.check_cmd import CheckCommand
+from m3p0.commands.create_cmd import CreateCommand
+from m3p0.commands.init_cmd import InitCommand
 
 
 app = typer.Typer()

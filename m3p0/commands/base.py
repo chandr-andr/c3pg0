@@ -3,7 +3,7 @@ import enum
 from typing import Self
 from colorama import Fore
 
-from c3pg0.utils import retrieve_driver
+from m3p0.utils import retrieve_driver
 
 
 class BaseCommandResult(abc.ABC):

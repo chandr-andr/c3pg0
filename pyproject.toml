@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "c3pg0"
+name = "m3p0"
 version = "0.1.0"
 description = ""
 authors = ["chandr-andr (Kiselev Aleksandr) <chandr@chandr.net>"]
@@ -25,10 +25,10 @@ mypy = "^1.11.2"
 [tool.poetry.group.dev.dependencies]
 types-colorama = "^0.4.15.20240311"
 
-[tool.c3pg0]
-migration_path = "./c3pg0/testing/migrations"
-postgres_url = "postgres://postgres:postgres@localhost:5432/c3pg0"
-driver = "c3pg0.testing.test_driver:build_driver"
+[tool.m3p0]
+migration_path = "./m3p0/testing/migrations"
+postgres_url = "postgres://postgres:postgres@localhost:5432/m3p0"
+driver = "m3p0.testing.test_driver:build_driver"
 
 
 [build-system]

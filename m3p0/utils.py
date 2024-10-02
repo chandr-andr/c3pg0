@@ -10,9 +10,9 @@ import sys
 import types
 from typing import Any, Generator
 
-from c3pg0.driver import C3PG0Driver, PSQLPyC3PG0Driver
-from c3pg0.app_config import application_config
-from c3pg0.queries import RETRIEVE_SORTED_REVISIONS
+from m3p0.driver import M3P0Driver, PSQLPyM3P0Driver
+from m3p0.app_config import application_config
+from m3p0.queries import RETRIEVE_SORTED_REVISIONS
 
 
 @dataclass
@@ -69,17 +69,17 @@ def import_object(object_spec: str) -> Any:
     return getattr(module, import_spec[1])
 
 
-def retrieve_driver() -> C3PG0Driver:
+def retrieve_driver() -> M3P0Driver:
     """Retrieve driver.
 
     If config file has driver path, try to import it and initialize.
-    It could be func, async func or subclass of `C3PG0Driver`.
+    It could be func, async func or subclass of `M3P0Driver`.
 
     ### Returns:
-    subclass of `C3PG0Driver`.
+    subclass of `M3P0Driver`.
     """
     if not application_config.driver:
-        return PSQLPyC3PG0Driver()
+        return PSQLPyM3P0Driver()
 
     driver_or_builder = import_object(application_config.driver)
 
@@ -91,9 +91,9 @@ def retrieve_driver() -> C3PG0Driver:
         return _retrieve_driver(driver_or_builder)
 
 
-def _retrieve_driver(possible_driver: Any) -> C3PG0Driver:
+def _retrieve_driver(possible_driver: Any) -> M3P0Driver:
     """Check that driver has a correct type."""
-    if isinstance(possible_driver, C3PG0Driver):
+    if isinstance(possible_driver, M3P0Driver):
         return possible_driver
     
     raise ValueError("NOT")
@@ -133,7 +133,7 @@ def migrations_revision_history() -> list[str]:
 
 
 async def database_revision_history(
-    driver: C3PG0Driver,
+    driver: M3P0Driver,
 ) -> list[str]:
     """Retrieve migration history by revisions with database."""
     result = await driver.fetch(

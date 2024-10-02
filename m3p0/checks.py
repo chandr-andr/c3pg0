@@ -1,11 +1,11 @@
 
 
-from c3pg0.driver import C3PG0Driver
-from c3pg0.utils import database_revision_history, migrations_revision_history
+from m3p0.driver import M3P0Driver
+from m3p0.utils import database_revision_history, migrations_revision_history
 
 
 async def check_migration_history(
-    driver: C3PG0Driver,
+    driver: M3P0Driver,
 ) -> tuple[bool, str]:
     local_revisions_history = migrations_revision_history()
     database_revisions_history = await database_revision_history(

@@ -7,7 +7,7 @@ from typing import Self
 
 @dataclass
 class ApplicationConfig:
-    """Main config for the C3PG0 application."""
+    """Main config for the M3P0 application."""
 
     # Folder for migrations
     migration_path: str = "./migrations"
@@ -17,7 +17,7 @@ class ApplicationConfig:
 
     # PostgreSQL URL
     postgres_url: str | None = None
-    postgres_url_env: str | None = "C3PG0_PSQL_URL"
+    postgres_url_env: str | None = "M3P0_PSQL_URL"
 
     # Other custom settings
     datetime_format: str = "%d-%m-%Y_%H:%M:%S"
@@ -33,9 +33,9 @@ class ApplicationConfig:
         with open(path, mode="rb") as pyproject:
             pyconfig = tomllib.load(pyproject)
 
-        c3pg0_config = pyconfig["tool"].get("c3pg0")
+        M3P0_config = pyconfig["tool"].get("m3p0")
 
-        return ApplicationConfig(**c3pg0_config if c3pg0_config else {})
+        return ApplicationConfig(**M3P0_config if M3P0_config else {})
 
 
 application_config = ApplicationConfig.construct()

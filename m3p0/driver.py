@@ -3,11 +3,11 @@ from typing import Any, Protocol, Self, runtime_checkable
 
 from psqlpy import ConnectionPool
 
-from c3pg0.app_config import application_config
+from m3p0.app_config import application_config
 
 
 @runtime_checkable
-class C3PG0Driver(Protocol):
+class M3P0Driver(Protocol):
     
     async def exists(
         self: Self,
@@ -61,8 +61,8 @@ class C3PG0Driver(Protocol):
         """
 
 
-class PSQLPyC3PG0Driver:
-    """C3PG0 driver based on `PSQLPy`."""
+class PSQLPyM3P0Driver:
+    """M3P0 driver based on `PSQLPy`."""
 
     def __init__(self: Self) -> None:
         """Initialize new driver instance."""
@@ -109,7 +109,7 @@ class PSQLPyC3PG0Driver:
         
         result = response.result()
         return result if result else None
-    
+
     async def fetch_val(
         self: Self,
         querystring: str,

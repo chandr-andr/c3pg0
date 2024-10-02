@@ -1,6 +1,6 @@
 
-from c3pg0.commands.base import BaseCommandResult, Command, SuccessCommandResult
-from c3pg0.queries import IS_VERSION_ALREADY_EXIST
+from m3p0.commands.base import BaseCommandResult, Command, SuccessCommandResult
+from m3p0.queries import IS_VERSION_ALREADY_EXIST
 
 
 class ApplyCommand(Command):

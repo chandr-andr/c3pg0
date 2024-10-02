@@ -1,5 +1,5 @@
-from c3pg0.checks import check_migration_history
-from c3pg0.commands.base import BaseCommandResult, Command, FailCommandResult, SuccessCommandResult
+from m3p0.checks import check_migration_history
+from m3p0.commands.base import BaseCommandResult, Command, FailCommandResult, SuccessCommandResult
 
 
 class CheckCommand(Command):
